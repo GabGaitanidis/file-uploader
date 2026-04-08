@@ -1,45 +1,53 @@
-# File Uploader
+# Cloudify
 
-A full-stack file management web application built with Node.js and Express. Users can register, log in, upload files, and organize them into folders — with cloud storage handled via Cloudinary.
+A cloud-based file storage web app where users can upload, organize, and download files through a clean folder-based interface.
+
+**Stack:** Node.js · Express · PostgreSQL · Prisma · EJS · Cloudinary
+
+---
 
 ## Features
 
-- User authentication (register / login / logout)
-- Upload files to personal storage
-- Organize files into folders
-- View and manage uploaded files
-- Persistent storage with PostgreSQL via Prisma ORM
+- User registration and login with hashed passwords
+- Personal dashboard with a collapsible sidebar for folder navigation
+- Create and delete folders
+- Upload images into folders (stored on Cloudinary)
+- Download or delete individual files
+- Session-based authentication
 
-## Tech Stack
+## How It Works
 
-- **Runtime:** Node.js
-- **Framework:** Express.js
-- **Database:** PostgreSQL
-- **ORM:** Prisma
-- **Templating:** EJS
-- **Auth:** Passport.js (session-based)
-- **Styling:** CSS
+Each user gets their own workspace. Files are uploaded to Cloudinary and their URLs are stored in PostgreSQL via Prisma. Folders group files together and are scoped to the logged-in user.
 
 ## Project Structure
 
 ```
-file-uploader/
-├── controllers/     # Route handler logic
+cloudify/
+├── controllers/     # Business logic (auth, folders, files)
 ├── routes/          # Express route definitions
-├── views/           # EJS templates
-├── public/          # Static assets (CSS, JS)
-├── prisma/          # Prisma schema and migrations
-├── app.js           # App entry point
-└── db.js            # Database connection
+├── views/           # EJS templates (login, signup, dashboard, folder)
+├── public/          # CSS and static assets
+├── prisma/          # Schema and migrations
+├── app.js           # Entry point
+└── db.js            # Prisma client and query functions
 ```
+
+## Database Schema
+
+| Table   | Description                         |
+| ------- | ----------------------------------- |
+| Users   | Stores username and hashed password |
+| folders | Belongs to a user, contains files   |
+| files   | Stores Cloudinary URL and filename  |
+| Session | Persists login sessions             |
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js v18+
-- PostgreSQL database
-- A Cloudinary account (for file storage)
+- PostgreSQL
+- Cloudinary account (free tier works)
 
 ### Installation
 
@@ -51,25 +59,20 @@ npm install
 
 ### Environment Variables
 
-Create a `.env` file in the root directory:
+Create a `.env` file in the root (see `.env.example` for reference):
 
 ```env
-DATABASE_URL=your_postgresql_connection_string
-SESSION_SECRET=your_session_secret
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+SESSION_SECRET="your_session_secret"
+CLOUDINARY_CLOUD_NAME="your_cloud_name"
+CLOUDINARY_API_KEY="your_api_key"
+CLOUDINARY_API_SECRET="your_api_secret"
 ```
 
-### Database Setup
+### Setup & Run
 
 ```bash
 npx prisma migrate dev
-```
-
-### Run
-
-```bash
 node app.js
 ```
 
@@ -77,8 +80,7 @@ Visit `http://localhost:3000`
 
 ## What I Learned
 
-- Handling multipart form data and file uploads with Multer
-- Integrating third-party cloud storage (Cloudinary)
-- Modeling relational data (users, folders, files) with Prisma
-- Session-based authentication with Passport.js
-- Structuring an Express app with MVC conventions
+- Integrating cloud file storage with Cloudinary and Multer
+- Designing relational data models with Prisma (users → folders → files)
+- Session persistence using a database-backed session store
+- Building a responsive sidebar UI with vanilla JS and CSS
